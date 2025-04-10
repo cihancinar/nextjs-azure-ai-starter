@@ -14,6 +14,7 @@
     "@ai-sdk/react": "^1.2.8",
     "agentic": "file:",
     "ai": "^4.3.4",
+    "lucide-react": "^0.487.0",
     "next": "15.3.0",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
