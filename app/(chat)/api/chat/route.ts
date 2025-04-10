@@ -2,7 +2,7 @@ import { createAzure } from '@ai-sdk/azure';
 import { streamText } from 'ai';
 
 const azure = createAzure({
-  resourceName: process.env.AZURE_OPENAI_RESOURCE_NAME,
+  baseURL: process.env.AZURE_OPENAI_RESOURCE_NAME,
   apiKey: process.env.AZURE_OPENAI_API_KEY,
 });
 
