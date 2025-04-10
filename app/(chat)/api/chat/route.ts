@@ -12,42 +12,60 @@ export const maxDuration = 60;
 export async function POST(req: Request) {
   const { messages } = await req.json();
   const query = messages[messages.length - 1].parts[0].text;
-  const model = azure('gpt-4o-mini');
 
-  // First step: Classify the query type
+  // Step 1: Classify the query type
+  const classificationPrompt = `Classify this customer query:\n${query}
+
+  Determine:
+  1. Query type (general, refund, or technical)
+  2. Complexity (simple or complex)
+  3. Brief reasoning for classification
+  `;
+
   const { object: classification } = await generateObject({
-    model,
+    model: azure('gpt-4o-mini'),
     schema: z.object({
       reasoning: z.string(),
       type: z.enum(['general', 'refund', 'technical']),
       complexity: z.enum(['simple', 'complex']),
     }),
-    prompt: `Classify this customer query:
-    ${query}
-
-    Determine:
-    1. Query type (general, refund, or technical)
-    2. Complexity (simple or complex)
-    3. Brief reasoning for classification`,
+    prompt: classificationPrompt,
   });
 
-  console.log('Classification:', classification);
+  // Step 2: Build the system prompt from a common base, a classification-specific string, and a unique name.
+  const basePrompt = `
+    When you answer, start by stating who you are and whether you will perform a simple or complex task on the first line. 
+    Generate only short, concise answers.
+  `;
 
-  // Route based on classification
-  // Set model and system prompt based on query type and complexity
+  // Classification-specific prompts
+  const classificationPrompts: Record<'general' | 'refund' | 'technical', string> = {
+    general: 'You are an expert customer service agent handling general inquiries.',
+    refund: 'You are an expert customer service agent specializing in refund requests.',
+    technical: 'You are a technical support specialist with deep product knowledge.',
+  };
+
+  // Classification-specific agent names
+  const classificationNames: Record<'general' | 'refund' | 'technical', string> = {
+    general: 'GeneralHelperBot',
+    refund: 'RefundAdvisor',
+    technical: 'TechSupportWizard',
+  };
+
+  const agentName = classificationNames[classification.type];
+  const systemPrompt = `
+    ${basePrompt}
+    ${classificationPrompts[classification.type]}
+    Your name is ${agentName}, and you will perform a ${classification.complexity} task.
+  `;
+
+  // Step 3: Stream the response with the appropriate model & system prompt
   const result = await streamText({
     model:
       classification.complexity === 'simple'
         ? azure('gpt-4o-mini')
         : azure('o3-mini'),
-    system: {
-      general:
-        'You are an expert customer service agent handling general inquiries. Your name is CustomerServiceAgent. When you are answering, you start by saying who you are.',
-      refund:
-        'You are a customer service agent specializing in refund requests. Follow company policy and collect necessary information. Your name is RefundAgent. When you are answering, you start by saying who you are.',
-      technical:
-        'You are a technical support specialist with deep product knowledge. Focus on clear step-by-step troubleshooting. Your name is TechnicalAgent. When you are answering, you start by saying who you are.',
-    }[classification.type],
+    system: systemPrompt,
     prompt: query,
   });
 
