@@ -3,7 +3,8 @@
 import { useChat } from '@ai-sdk/react';
 import { useRef, useEffect } from 'react';
 import Image from 'next/image';
-import { Send } from 'lucide-react';
+import { ArrowUp } from 'lucide-react';
+import TextareaAutosize from 'react-textarea-autosize';
 
 export default function Chat() {
   const { messages, input, handleInputChange, handleSubmit } = useChat();
@@ -74,40 +75,43 @@ export default function Chat() {
       {/* Chat Input */}
       <div className="fixed bottom-0 left-0 right-0 px-4 pb-4 pt-6 bg-white dark:bg-zinc-900">
         <div className="max-w-2xl mx-auto">
-          <form
-            onSubmit={handleSubmit}
-            className="relative border border-gray-200 dark:border-zinc-700 rounded-lg bg-white dark:bg-zinc-800 shadow-lg"
-          >
-            <div className="flex items-center">
-              <textarea
-                className="w-full py-3 px-4 pr-10 resize-none max-h-40 bg-transparent focus:outline-none dark:text-white text-sm md:text-base"
-                value={input}
-                placeholder="Message..."
-                onChange={handleInputChange}
-                rows={1}
-                onKeyDown={(e) => {
-                  if (e.key === 'Enter' && !e.shiftKey) {
-                    e.preventDefault();
-                    if (input.trim()) {
-                      handleSubmit(e);
-                    }
+        <form
+          onSubmit={handleSubmit}
+          className="border border-gray-200 dark:border-zinc-700 rounded-lg bg-white dark:bg-zinc-800 shadow-lg p-3"
+        >
+          {/* Use flex with items-end so the textarea grows, and the button remains aligned at the bottom */}
+          <div className="flex items-end gap-2">
+            <TextareaAutosize
+              minRows={1}
+              maxRows={6}
+              className="w-full py-2 px-3 bg-transparent focus:outline-none dark:text-white text-sm md:text-base resize-none"
+              value={input}
+              placeholder="Send a message..."
+              onChange={handleInputChange}
+              onKeyDown={(e) => {
+                if (e.key === 'Enter' && !e.shiftKey) {
+                  e.preventDefault();
+                  if (input.trim()) {
+                    handleSubmit(e);
                   }
-                }}
-                style={{ minHeight: '44px' }}
-              />
-              <button
-                type="submit"
-                className={`absolute right-2 p-2 rounded-md ${
-                  input.trim()
-                    ? 'text-blue-500 hover:bg-blue-50 dark:hover:bg-zinc-700'
-                    : 'text-gray-300 dark:text-gray-600 cursor-not-allowed'
-                }`}
-                disabled={!input.trim()}
-              >
-                <Send size={18} />
-              </button>
-            </div>
-          </form>
+                }
+              }}
+            />
+
+            {/* Remove absolute positioning and let flex layout position the button at the bottom */}
+            <button
+              type="submit"
+              className={`rounded-full p-2 ${
+                input.trim()
+                  ? 'bg-[#1670ec] text-white hover:bg-[#125aa5]'
+                  : 'bg-gray-300 text-gray-600 cursor-not-allowed'
+              }`}
+              disabled={!input.trim()}
+            >
+              <ArrowUp size={18} />
+            </button>
+          </div>
+        </form>
         </div>
       </div>
     </div>
