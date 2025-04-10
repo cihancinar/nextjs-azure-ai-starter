@@ -12,7 +12,7 @@ export const maxDuration = 60;
 export async function POST(req: Request) {
   const { messages } = await req.json();
   const query = messages[messages.length - 1].parts[0].text;
-  const model = azure('gpt-4o');
+  const model = azure('gpt-4o-mini');
 
   // First step: Classify the query type
   const { object: classification } = await generateObject({
