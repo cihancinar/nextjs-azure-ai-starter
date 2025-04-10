@@ -2,7 +2,8 @@
 
 import { useChat } from '@ai-sdk/react';
 import { useRef, useEffect } from 'react';
-import { User, Bot, Send } from 'lucide-react';
+import Image from 'next/image';
+import { Send } from 'lucide-react';
 
 export default function Chat() {
   const { messages, input, handleInputChange, handleSubmit } = useChat();
@@ -21,24 +22,14 @@ export default function Chat() {
       {/* Chat messages container */}
       <div className="flex-1 w-full max-w-2xl mx-auto pb-36">
         <div className="flex flex-col space-y-4 p-4">
-          {messages.map(message => (
-            <div 
-              key={message.id} 
+          {messages.map((message) => (
+            <div
+              key={message.id}
               className={`flex ${message.role === 'user' ? 'justify-end' : 'justify-start'}`}
             >
-              <div className="flex items-start gap-3 max-w-xs md:max-w-md lg:max-w-lg">
-                <div className="flex-shrink-0">
-                  {message.role === 'user' ? (
-                    <div className="w-8 h-8 rounded-full bg-blue-500 flex items-center justify-center">
-                      <User size={16} className="text-white" />
-                    </div>
-                  ) : (
-                    <div className="w-8 h-8 rounded-full bg-purple-600 flex items-center justify-center">
-                      <Bot size={16} className="text-white" />
-                    </div>
-                  )}
-                </div>
-                <div className="whitespace-pre-wrap break-words text-sm md:text-base">
+              {/* For user messages, remove icon and use a beige background bubble */}
+              {message.role === 'user' ? (
+                <div className="p-3 rounded-lg bg-[#1670ec] text-white whitespace-pre-wrap break-words text-sm md:text-base max-w-xs md:max-w-md lg:max-w-lg">
                   {message.parts.map((part, i) => {
                     switch (part.type) {
                       case 'text':
@@ -48,17 +39,42 @@ export default function Chat() {
                     }
                   })}
                 </div>
-              </div>
+              ) : (
+                <div className="flex items-start gap-3 max-w-xs md:max-w-md lg:max-w-lg">
+                                    <div className="flex-shrink-0">
+                    <div className="w-8 h-8 rounded-full bg-white border border-[#1670ec] flex items-center justify-center overflow-hidden">
+                      <Image
+                        src="/azure-ai-bot-avatar.avif"
+                        alt="AI Assistant"
+                        width={32}
+                        height={32}
+                        className="object-cover"
+                        priority
+                      />
+                    </div>
+                  </div>
+                  <div className="whitespace-pre-wrap break-words text-sm md:text-base">
+                    {message.parts.map((part, i) => {
+                      switch (part.type) {
+                        case 'text':
+                          return <div key={`${message.id}-${i}`}>{part.text}</div>;
+                        default:
+                          return null;
+                      }
+                    })}
+                  </div>
+                </div>
+              )}
             </div>
           ))}
           <div ref={messagesEndRef} />
         </div>
       </div>
-      
+
       {/* Chat Input */}
       <div className="fixed bottom-0 left-0 right-0 px-4 pb-4 pt-6 bg-white dark:bg-zinc-900">
         <div className="max-w-2xl mx-auto">
-          <form 
+          <form
             onSubmit={handleSubmit}
             className="relative border border-gray-200 dark:border-zinc-700 rounded-lg bg-white dark:bg-zinc-800 shadow-lg"
           >
@@ -79,10 +95,12 @@ export default function Chat() {
                 }}
                 style={{ minHeight: '44px' }}
               />
-              <button 
-                type="submit" 
+              <button
+                type="submit"
                 className={`absolute right-2 p-2 rounded-md ${
-                  input.trim() ? 'text-blue-500 hover:bg-blue-50 dark:hover:bg-zinc-700' : 'text-gray-300 dark:text-gray-600 cursor-not-allowed'
+                  input.trim()
+                    ? 'text-blue-500 hover:bg-blue-50 dark:hover:bg-zinc-700'
+                    : 'text-gray-300 dark:text-gray-600 cursor-not-allowed'
                 }`}
                 disabled={!input.trim()}
               >
