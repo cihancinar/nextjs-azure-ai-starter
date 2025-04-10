@@ -18,7 +18,7 @@ export default function Chat() {
 
   return (
     <div className="flex flex-col min-h-screen bg-white dark:bg-zinc-900">
-      {/* Chat messages container without scrolling */}
+      {/* Chat messages container */}
       <div className="flex-1 w-full max-w-2xl mx-auto pb-36">
         <div className="flex flex-col space-y-4 p-4">
           {messages.map(message => (
@@ -55,7 +55,7 @@ export default function Chat() {
         </div>
       </div>
       
-      {/* Claude/ChatGPT style input at bottom with solid background to prevent text showing through */}
+      {/* Chat Input */}
       <div className="fixed bottom-0 left-0 right-0 px-4 pb-4 pt-6 bg-white dark:bg-zinc-900">
         <div className="max-w-2xl mx-auto">
           <form 
