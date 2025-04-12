@@ -1,36 +1,56 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Next.js Azure AI Agent Starter
+
+This project provides a complete starter template for building AI-powered chat applications using Next.js and Azure OpenAI. It features a customizable chat interface with streaming responses and intelligent query classification.
+
+![Chat Interface Preview](public/chatui.avif)
+
+## Features
+
+- 🤖 Intelligent query classification (general, refund, technical)
+- 🔄 Streaming responses for real-time interaction
+- 📱 Responsive, modern UI that works on all devices
+- 🧠 Adaptive model selection based on query complexity
+- 🎭 Dynamic AI agent personalities based on query type
 
 ## Getting Started
 
-First, run the development server:
-
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+1. Clone this repository
+2. Rename `.example.env.local` to `.env.local` and update your Azure OpenAI credentials:
+```
+AZURE_OPENAI_RESOURCE_NAME=your-resource-name 
+AZURE_OPENAI_API_KEY=your-api-key
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+3. Install dependencies and start the development server:
+```bash
+npm install
+npm run dev
+```
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+4. Open http://localhost:3000 in your browser
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## Project Structure
 
-## Learn More
+- `app/(chat)/page.tsx`: The main chat interface
+- `app/(chat)/api/chat/route.ts`: API route containing the agent logic and LLM calls
+- `components/`: Reusable UI components
+- `public/`: Static assets including images
 
-To learn more about Next.js, take a look at the following resources:
+## Customization
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+You can easily customize this template:
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+- Modify the agent logic in `app/(chat)/api/chat/route.ts`
+- Change the classification types and prompts
+- Adjust the UI in `app/(chat)/page.tsx`
+- Replace models with different Azure OpenAI deployments
 
-## Deploy on Vercel
+## License
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+MIT
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## Acknowledgements
+
+- Built with [Next.js](https://nextjs.org/)
+- Powered by [Azure OpenAI](https://azure.microsoft.com/en-us/products/ai-services/openai-service)
+- UI components styled with [Tailwind CSS](https://tailwindcss.com/)
